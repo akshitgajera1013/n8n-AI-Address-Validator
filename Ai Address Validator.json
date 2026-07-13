@@ -1,0 +1,533 @@
+{
+  "name": "Ai Address Validator",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "chatIds": "6271001762"
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -736,
+        -96
+      ],
+      "id": "04a9cfee-095a-4aac-b518-9f1f55790b8c",
+      "name": "Telegram Trigger",
+      "webhookId": "8c85fddf-1be3-4986-b851-1857020336b3"
+    
+    },
+    {
+      "parameters": {
+        "chatId": "6271001762",
+        "text": "Please share the secret code to Procide !",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "0dd415cb-4cf1-4762-af37-2c1686f7c117",
+      "name": "Send a text message",
+      "webhookId": "ea850292-3045-46f0-be70-87b331f8b0e5"
+      
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14e2vfptHrZgJwapJ6cWir7tKmQRND1vx_lRg-5W5sM0",
+          "mode": "list",
+          "cachedResultName": "AI Address Validator",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14e2vfptHrZgJwapJ6cWir7tKmQRND1vx_lRg-5W5sM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14e2vfptHrZgJwapJ6cWir7tKmQRND1vx_lRg-5W5sM0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -288,
+        -192
+      ],
+      "id": "61e59e7b-0507-4796-81ad-8ed7ca3d8ee0",
+      "name": "Get row(s) in sheet"
+      
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ac754bd-d23a-4ffb-90ba-274740712438",
+              "name": "Remark",
+              "value": "={{ $json.Address.length < 25 ? 'Too Short' : 'Need AI Check' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -64,
+        -192
+      ],
+      "id": "dbdee9b3-ef17-4650-9be0-32bb71d3f39b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "73905456-cf74-477f-a8ef-0699076dac3d",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "Go",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -512,
+        -96
+      ],
+      "id": "b92ba528-34b9-4d75-af89-f527c62101ee",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0bbf4e84-389b-4ad1-8eba-f4d5496277d0",
+              "leftValue": "={{ $json.Remark }}",
+              "rightValue": "Need AI Check",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        -192
+      ],
+      "id": "202d64ec-0732-4d96-be36-667eef571837",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ca60069b-dd19-42d7-acdf-0e1d7cabdc25",
+              "name": "Remarks",
+              "value": "={{ $json.Remark }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        160
+      ],
+      "id": "96b3669b-f46e-4725-8490-15756ea9a987",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tell me if this address is fake/gibberish or not. Only consider fake to the address that in unreadle sych as 'khsklk' or anythink that can't looks real address. Just Reply with either FAKE or VALID.\n\n\nAddress:- {{ $('Get row(s) in sheet').item.json.Address }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an experinced address checker. your task is to check the given address is VALID or FAKE"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        384,
+        -320
+      ],
+      "id": "a2bdfb8c-f84b-41a4-97ed-dddc77c7ad7e",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        576,
+        -96
+      ],
+      "id": "d2958b2f-b650-414e-94cf-74dd3dc4bc58",
+      "name": "Mistral Cloud Chat Model"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9fa5d601-1a20-4105-bb3b-54f4c4f20aea",
+              "name": "Remark",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        -320
+      ],
+      "id": "8a83a85f-eada-4e17-b3d1-bb48f22df340",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        960,
+        -192
+      ],
+      "id": "3ed92664-6f62-4536-b3b7-3059fd7298b4",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14e2vfptHrZgJwapJ6cWir7tKmQRND1vx_lRg-5W5sM0",
+          "mode": "list",
+          "cachedResultName": "AI Address Validator",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14e2vfptHrZgJwapJ6cWir7tKmQRND1vx_lRg-5W5sM0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14e2vfptHrZgJwapJ6cWir7tKmQRND1vx_lRg-5W5sM0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Order Number": "={{ $('Get row(s) in sheet').item.json['Order Number'] }}",
+            "Remark": "={{ $json.Remark || $json.Remarks  }}"
+          },
+          "matchingColumns": [
+            "Order Number"
+          ],
+          "schema": [
+            {
+              "id": "Remark",
+              "displayName": "Remark",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Order Number",
+              "displayName": "Order Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "City",
+              "displayName": "City",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pincode",
+              "displayName": "Pincode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        -192
+      ],
+      "id": "cdb26412-6c28-4314-84db-007e3aa0cc23",
+      "name": "Update row in sheet"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "Done. Please check sheet at once!!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1408,
+        -192
+      ],
+      "id": "c266fe50-68fe-4488-b461-ae8ea3e71805",
+      "name": "Send a text message1",
+      "webhookId": "dcb4de50-c59d-41a0-857e-0709a0ab0991",
+      "executeOnce": true
+      }
+    
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "85fa4c0f-ea3a-4b8f-a539-10ec9ee7ba10",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae00f994c77986e204815715094cd6021802fcf754400a1839c2c62dada30c39"
+  },
+  "nodeGroups": [],
+  "id": "htcF0OOthccUr7Ux",
+  "tags": []
+}
