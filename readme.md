@@ -227,25 +227,25 @@ Address validation completed successfully.
 
 ## n8n Workflow
 
-(Add Screenshot)
+![Output](images/1.png)
 
 ---
 
 ## Google Sheet Before Validation
 
-(Add Screenshot)
+![Output](images/2.png)
 
 ---
 
 ## Google Sheet After Validation
 
-(Add Screenshot)
+![Output](images/3.png)
 
 ---
 
 ## Telegram Notification
 
-(Add Screenshot)
+![Output](images/4.png)
 
 ---
 
@@ -265,21 +265,7 @@ AI-Address-Validator/
 └── sample_data.xlsx
 ```
 
----
 
-# 🔮 Future Improvements
-
-- Address standardization
-- Google Maps API verification
-- Postal code validation
-- Duplicate address detection
-- Confidence score
-- Multi-language support
-- CRM integration
-- Email notifications
-- Dashboard using Power BI
-
----
 
 # 👨‍💻 Author
 
